@@ -65,6 +65,7 @@ services:
          fraud-process:1:1,
          steps-process:1:1,
          end-process:1:1"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
 
   control-center:
     image: confluentinc/cp-enterprise-control-center:5.3.1
