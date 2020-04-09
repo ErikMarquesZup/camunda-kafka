@@ -9,6 +9,7 @@ import br.com.itau.journey.rocksdb.mapper.exception.SerDeException;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.runtime.ActivityInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,11 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Component
@@ -89,4 +92,19 @@ public class ProcessInstanceService {
         return ksqlInstanceService.getProcessInstance(ksql);
     }
 
+    public KafkaExternalTask startReply(RequestStartDTO request) throws InterruptedException, ExecutionException, IOException {
+        String uuid = UUID.randomUUID().toString();
+        Message<KafkaExternalTask> message = MessageBuilder
+                .withPayload(KafkaExternalTask.builder()
+                        .type(TypeComponent.START_EVENT.getEvent())
+                        .cpf(request.getCpf())
+                        .uuid(uuid)
+                        .internalUserTask(Boolean.TRUE)
+                        .id("12345")
+                        .bpmnInstance(request.getBpmnInstance()).uuid(uuid).build())
+                .setHeader(KafkaHeaders.TOPIC, "start-reply-process")
+                .setHeader(KafkaHeaders.REPLY_TOPIC, "reply-request-process")
+                .build();
+        return producerService.sendToKafkaReply(message);
+    }
 }

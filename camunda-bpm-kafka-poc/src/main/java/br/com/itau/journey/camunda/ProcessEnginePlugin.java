@@ -4,6 +4,10 @@ import br.com.itau.journey.constant.TypeComponent;
 import br.com.itau.journey.domain.ExternalTaskAccessInfo;
 import br.com.itau.journey.domain.KafkaExternalTask;
 import br.com.itau.journey.kafka.schedulers.ExternalTaskScheduler;
+import br.com.itau.journey.rocksdb.RocksDBKeyValueService;
+import br.com.itau.journey.rocksdb.kv.exception.FindFailedException;
+import br.com.itau.journey.rocksdb.mapper.exception.SerDeException;
+import br.com.itau.journey.service.ProcessInstanceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +36,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -58,6 +63,8 @@ public class ProcessEnginePlugin extends AbstractProcessEnginePlugin {
     private ProcessEngine engine;
     @Autowired
     private RuntimeService runtimeService;
+    @Autowired
+    private RocksDBKeyValueService rocksDBKeyValueService;
 
 
     public final String START_EVENT = "start";
@@ -66,10 +73,12 @@ public class ProcessEnginePlugin extends AbstractProcessEnginePlugin {
     public ProcessEnginePlugin() {
     }
 
-    public ProcessEnginePlugin(ExternalTaskScheduler externalTaskScheduler, ObjectMapper objectMapper, ProcessEngine engine) {
+    public ProcessEnginePlugin(ExternalTaskScheduler externalTaskScheduler, ObjectMapper objectMapper, ProcessEngine engine, RuntimeService runtimeService, RocksDBKeyValueService rocksDBKeyValueService) {
         this.externalTaskScheduler = externalTaskScheduler;
         this.objectMapper = objectMapper;
         this.engine = engine;
+        this.runtimeService = runtimeService;
+        this.rocksDBKeyValueService = rocksDBKeyValueService;
     }
 
     private List<BpmnParseListener> customPreBPMNParseListeners(final ProcessEngineConfigurationImpl processEngineConfiguration) {
@@ -154,6 +163,7 @@ public class ProcessEnginePlugin extends AbstractProcessEnginePlugin {
                                 .typeDescription(typeDescription)
                                 .taskId(taskId)
                                 .infoUserTask(info)
+                                .id("12345")
                                 .internalUserTask(internalUserTask)
                                 .type(type.getEvent())
                                 .build())

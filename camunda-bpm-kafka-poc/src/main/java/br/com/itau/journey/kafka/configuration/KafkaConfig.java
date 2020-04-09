@@ -16,7 +16,6 @@ import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.springframework.messaging.Message;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +29,7 @@ public class KafkaConfig {
 
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         props.put(ProducerConfig.ACKS_CONFIG, "all");
         props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
@@ -55,26 +54,27 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Message<KafkaExternalTask>> producerFactory() {
+    public ProducerFactory<String, KafkaExternalTask> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, Message<KafkaExternalTask>> kafkaTemplate() {
+    public KafkaTemplate<String, KafkaExternalTask> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
     @Bean
-    public ReplyingKafkaTemplate<String, Message<KafkaExternalTask>, String> replyKafkaTemplate(ProducerFactory<String, Message<KafkaExternalTask>> producerFactory,
-                                                                                                           KafkaMessageListenerContainer<String, String> container){
-        return new ReplyingKafkaTemplate<>(producerFactory, container);
-
+    public ReplyingKafkaTemplate<String, KafkaExternalTask, String> replyKafkaTemplate(ProducerFactory<String, KafkaExternalTask> producerFactory, KafkaMessageListenerContainer<String, String> container){
+        ReplyingKafkaTemplate<String, KafkaExternalTask, String> replyTemplate = new ReplyingKafkaTemplate<>(producerFactory, container);
+        replyTemplate.setReplyTimeout(30000);
+        replyTemplate.setSharedReplyTopic(true);
+        return replyTemplate;
     }
 
     @Bean
-    public KafkaMessageListenerContainer<String, String> replyContainer(ConsumerFactory<String, String> cf) {
+    public KafkaMessageListenerContainer<String, String> replyContainer(ConsumerFactory<String, String> consumerFactory) {
         ContainerProperties containerProperties = new ContainerProperties("reply-request-process");
-        return new KafkaMessageListenerContainer<>(cf, containerProperties);
+        return new KafkaMessageListenerContainer<>(consumerFactory, containerProperties);
     }
 
     @Bean

@@ -41,5 +41,6 @@ camunda:
       type: postgres
       #schema-update: create-drop
 
-#camunda.bpm.auto-deployment-enabled: false
+
+
 

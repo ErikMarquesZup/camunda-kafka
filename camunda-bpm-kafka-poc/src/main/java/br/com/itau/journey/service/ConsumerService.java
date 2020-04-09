@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -27,10 +29,12 @@ public class ConsumerService {
     private TaskService taskService;
     private ProducerService producerService;
     private final String TOPIC_START_EVENT = "start-process";
+    private final String TOPIC_START_REPLY_EVENT = "start-reply-process";
     private final String TOPIC_STEPS_EVENT = "steps-process";
     private final String TOPIC_COMPLETE_TASK = "complete-process";
     private final String TOPIC_UPDATE_PROPOSAL_EVENT = "update-proposal-process";
     private final String TOPIC_USER_TASK_EVENT = "user-tasks-process";
+    private final String TOPIC_USER_TASK_REPLY_EVENT = "user-tasks-reply-process";
     private final String TOPIC_FRAUD_EVENT = "fraud-process";
 
     @Autowired
@@ -46,7 +50,7 @@ public class ConsumerService {
             id = "startEventProcessor",
             topics = TOPIC_START_EVENT,
             containerFactory = "kafkaListenerContainerFactory")
-    public void listenStartProcess(String message) throws IOException, SaveFailedException, InterruptedException {
+    public void startEventProcessor(String message) throws IOException, SaveFailedException, InterruptedException {
         KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
         String processInstanceId = processInstanceService.startProcessInstance(externalTask.getBpmnInstance());
         externalTask.setProcessInstanceId(processInstanceId);
@@ -55,11 +59,24 @@ public class ConsumerService {
         rocksDBKeyValueService.save(externalTask.getCpf(), externalTask.getProcessInstanceId());
     }
 
+
+    @KafkaListener(
+            id = "startReplyEventProcessor",
+            topics = TOPIC_START_REPLY_EVENT,
+            containerFactory = "kafkaListenerContainerFactory")
+    @SendTo
+    public void startEventReplyProcessor(String message) throws IOException {
+        KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
+        String processInstanceId = processInstanceService.startProcessInstance(externalTask.getBpmnInstance());
+        externalTask.setProcessInstanceId(processInstanceId);
+        log.info(":: Listener Start ProcessInstanceId {} - Process: {}",processInstanceId,  message);
+    }
+
     @KafkaListener(
             id = "stepsEventProcessor",
             topics = TOPIC_STEPS_EVENT,
             containerFactory = "kafkaListenerContainerFactory")
-    public void listenStepProcess(String message) throws IOException, SaveFailedException {
+    public void stepsEventProcessor(String message) throws IOException, SaveFailedException {
         KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
         log.info(":: Listener Step Process: {}",  message);
         KafkaExternalTasks kafkaExternalTasks = KafkaExternalTasks.builder().kafkaExternalTasks(Collections.singletonList(externalTask)).build();
@@ -70,7 +87,8 @@ public class ConsumerService {
             id = "updateProposalEventProcessor",
             topics = TOPIC_UPDATE_PROPOSAL_EVENT,
             containerFactory = "kafkaListenerContainerFactory")
-    public void listenUpdateProposal(String message) throws IOException, InterruptedException {
+    public void updateProposalEventProcessor(String message) throws IOException, InterruptedException {
+        Thread.sleep(3000);
         KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
         log.info(":: Listener Update Proposal Process: {}",  message);
         // update proposal process
@@ -81,7 +99,7 @@ public class ConsumerService {
             id = "userTaskEventProcessor",
             topics = TOPIC_USER_TASK_EVENT,
             containerFactory = "kafkaListenerContainerFactory")
-    public void listenUserTask(String message) throws IOException, SaveFailedException {
+    public void userTaskEventProcessor(String message) throws IOException, SaveFailedException {
         KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
         externalTask.setInternalUserTask(Boolean.FALSE);
         log.info(":: Listener User Task Process: {}",  message);
@@ -91,10 +109,22 @@ public class ConsumerService {
     }
 
     @KafkaListener(
+            id = "userTaskReplyEventProcessor",
+            topics = TOPIC_USER_TASK_REPLY_EVENT,
+            containerFactory = "kafkaListenerContainerFactory")
+    @SendTo("reply-request-process")
+    public KafkaExternalTask userTaskReplyEventProcessor(String message) throws IOException, SaveFailedException {
+        KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
+        log.info(":: Listener User Task Process: {}",  message);
+        externalTask.setReactive(Boolean.TRUE);
+        return externalTask;
+    }
+
+    @KafkaListener(
             id = "fraudEventProcessor",
             topics = TOPIC_FRAUD_EVENT,
             containerFactory = "kafkaListenerContainerFactory")
-    public void listenFraud(String message) throws IOException, InterruptedException {
+    public void fraudEventProcessor(String message) throws IOException, InterruptedException {
         KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
         log.info(":: Listener Fraud Process: {}",  message);
         this.sendKafka(externalTask, TOPIC_COMPLETE_TASK);
@@ -124,6 +154,5 @@ public class ConsumerService {
                 .build();
         producerService.sendToKafka(message);
     }
-
 
 }

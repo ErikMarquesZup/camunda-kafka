@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class KafkaExternalTask {
 
+    private String id = "12345";
+    private boolean reactive;
     private String type;
     private String cpf;
     private String typeDescription;
