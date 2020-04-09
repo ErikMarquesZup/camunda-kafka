@@ -34,7 +34,7 @@ public class ProcessInstanceKSQLController {
         final String processInstanceId = processInstanceService.startProcessInstance(requestStart.getBpmnInstance());
         log.info(":: 1 - Created instance with id {}", processInstanceId);
 
-        String ksql = "select * from END_PROCESS_STREAM " +
+        String ksql = "select * from STEPS_PROCESS_STREAM " +
                 " where processInstanceId = '" + processInstanceId + "' " +
                 " and (type = 'UserTask' or type = 'EndEvent') " +
                 " limit 1;";
@@ -51,7 +51,7 @@ public class ProcessInstanceKSQLController {
         processInstanceService.completeTask(taskId);
         log.info(":: 1 - Complete task id {}", taskId);
 
-        String ksql = "select * from END_PROCESS_STREAM " +
+        String ksql = "select * from STEPS_PROCESS_STREAM " +
                 " where processInstanceId = '" + processInstanceId + "' " +
                 " and type = 'EndEvent' " +
                 " limit 1;";
