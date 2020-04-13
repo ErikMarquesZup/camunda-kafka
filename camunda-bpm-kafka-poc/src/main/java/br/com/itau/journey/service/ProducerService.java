@@ -51,12 +51,12 @@ public class ProducerService {
         });
     }
 
-    public KafkaExternalTask sendToKafkaReply(Message<KafkaExternalTask> message) throws ExecutionException, InterruptedException, IOException {
-        String requestTopic = message.getHeaders().get(KafkaHeaders.TOPIC).toString();
-        String requestReplyTopic = message.getHeaders().get(KafkaHeaders.REPLY_TOPIC).toString();
+    public KafkaExternalTask sendToKafkaReply(Message<KafkaExternalTask> kafkaExternalTaskMessage) throws ExecutionException, InterruptedException, IOException {
+        String requestTopic = kafkaExternalTaskMessage.getHeaders().get(KafkaHeaders.TOPIC).toString();
+        String requestReplyTopic = kafkaExternalTaskMessage.getHeaders().get(KafkaHeaders.REPLY_TOPIC).toString();
 
         // create producer record
-        KafkaExternalTask payload = message.getPayload();
+        KafkaExternalTask payload = kafkaExternalTaskMessage.getPayload();
         ProducerRecord<String, KafkaExternalTask> record = new ProducerRecord<>(requestTopic, payload.getId(), payload);
 
         // set reply topic in header

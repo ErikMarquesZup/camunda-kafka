@@ -2,21 +2,13 @@ package br.com.itau.journey.kafka.schedulers;
 
 import br.com.itau.journey.domain.ExternalTaskAccessInfo;
 import br.com.itau.journey.domain.KafkaExternalTask;
-import br.com.itau.journey.domain.KafkaExternalTasks;
-import br.com.itau.journey.rocksdb.RocksDBKeyValueService;
-import br.com.itau.journey.rocksdb.kv.exception.SaveFailedException;
-import br.com.itau.journey.rocksdb.mapper.exception.SerializationException;
 import br.com.itau.journey.service.ProducerService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.function.Consumer;
 
 import static java.util.Optional.ofNullable;
