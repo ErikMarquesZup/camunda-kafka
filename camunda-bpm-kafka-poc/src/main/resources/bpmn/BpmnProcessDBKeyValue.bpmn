@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0l8j3p6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.5.0">
-  <bpmn:process id="bpmnProcess" name="BPMNProcess" isExecutable="true">
+  <bpmn:process id="bpmnProcessKeyValue" name="BPMNProcessKeyValue" isExecutable="true">
     <bpmn:startEvent id="StartEvent" name="StartEvent">
       <bpmn:extensionElements>
         <camunda:properties>
@@ -71,7 +71,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_108ota7" sourceRef="UsertTaskFraud" targetRef="EndEvent_0oianmt" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="bpmnProcess">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="bpmnProcessKeyValue">
       <bpmndi:BPMNShape id="StartEvent_0bem1ux_di" bpmnElement="StartEvent">
         <dc:Bounds x="152" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>

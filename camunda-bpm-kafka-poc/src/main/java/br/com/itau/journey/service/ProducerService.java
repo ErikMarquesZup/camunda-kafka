@@ -12,7 +12,6 @@ import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.kafka.support.converter.RecordMessageConverter;
 import org.springframework.messaging.Message;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

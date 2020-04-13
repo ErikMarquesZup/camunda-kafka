@@ -64,7 +64,6 @@ public class ConsumerService {
             id = "startReplyEventProcessor",
             topics = TOPIC_START_REPLY_EVENT,
             containerFactory = "kafkaListenerContainerFactory")
-    @SendTo
     public void startEventReplyProcessor(String message) throws IOException {
         KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
         String processInstanceId = processInstanceService.startProcessInstance(externalTask.getBpmnInstance());
