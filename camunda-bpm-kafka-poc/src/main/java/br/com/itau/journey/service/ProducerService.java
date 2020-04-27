@@ -57,7 +57,7 @@ public class ProducerService {
 
         // create producer record
         KafkaExternalTask payload = kafkaExternalTaskMessage.getPayload();
-        ProducerRecord<String, KafkaExternalTask> record = new ProducerRecord<>(requestTopic, payload.getId(), payload);
+        ProducerRecord<String, KafkaExternalTask> record = new ProducerRecord<>(requestTopic, payload.getProcessInstanceId(), payload);
 
         // set reply topic in header
         record.headers().add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, requestReplyTopic.getBytes()));

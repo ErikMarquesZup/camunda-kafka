@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
 public class KafkaExternalTask {
 
-    private String id = "12345";
-    private boolean reactive;
     private String type;
     private String cpf;
     private String typeDescription;

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -64,11 +63,13 @@ public class ConsumerService {
             id = "startReplyEventProcessor",
             topics = TOPIC_START_REPLY_EVENT,
             containerFactory = "kafkaListenerContainerFactory")
-    public void startEventReplyProcessor(String message) throws IOException {
+    @SendTo
+    public KafkaExternalTask startEventReplyProcessor(String message) throws IOException {
         KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
         String processInstanceId = processInstanceService.startProcessInstance(externalTask.getBpmnInstance());
         externalTask.setProcessInstanceId(processInstanceId);
         log.info(":: Listener Start ProcessInstanceId {} - Process: {}",processInstanceId,  message);
+        return externalTask;
     }
 
     @KafkaListener(
@@ -115,7 +116,6 @@ public class ConsumerService {
     public KafkaExternalTask userTaskReplyEventProcessor(String message) throws IOException, SaveFailedException {
         KafkaExternalTask externalTask = this.objectMapper.readValue(message, KafkaExternalTask.class);
         log.info(":: Listener User Task Process: {}",  message);
-        externalTask.setReactive(Boolean.TRUE);
         return externalTask;
     }
 

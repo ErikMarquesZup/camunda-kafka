@@ -163,7 +163,6 @@ public class ProcessEnginePlugin extends AbstractProcessEnginePlugin {
                                 .typeDescription(typeDescription)
                                 .taskId(taskId)
                                 .infoUserTask(info)
-                                .id("12345")
                                 .internalUserTask(internalUserTask)
                                 .type(type.getEvent())
                                 .build())

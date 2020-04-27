@@ -100,7 +100,6 @@ public class ProcessInstanceService {
                         .cpf(request.getCpf())
                         .uuid(uuid)
                         .internalUserTask(Boolean.TRUE)
-                        .id("12345")
                         .bpmnInstance(request.getBpmnInstance()).uuid(uuid).build())
                 .setHeader(KafkaHeaders.TOPIC, "start-reply-process")
                 .setHeader(KafkaHeaders.REPLY_TOPIC, "reply-request-process")
