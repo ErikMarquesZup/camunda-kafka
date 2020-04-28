@@ -90,7 +90,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bpmnInstance\": \"bpmnEndProcess\"\n}",
+					"raw": "{\n    \"bpmnInstance\": \"bpmnProcessKSQL\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -141,7 +141,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bpmnInstance\": \"bpmnEndProcessMultiple\"\n}",
+					"raw": "{\n    \"bpmnInstance\": \"bpmnProcessKeyValue\",\n    \"cpf\": \"38019258892\",\n    \"newProposal\": true\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -149,7 +149,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/instance/rocksDB/start",
+					"raw": "localhost:8080/instance/rocksDB/start/",
 					"host": [
 						"localhost"
 					],
@@ -157,7 +157,60 @@
 					"path": [
 						"instance",
 						"rocksDB",
-						"start"
+						"start",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "start instance reactive",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75bbc253-312b-401b-aed4-89ef8314619f",
+						"exec": [
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bpmnInstance\": \"bpmnProcessReply\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/instance/reactive/start/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"instance",
+						"reactive",
+						"start",
+						""
 					]
 				}
 			},
@@ -188,7 +241,7 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:8080/instance/rocksDB/{{instanceId}}/complete/{{taskId}}",
+					"raw": "localhost:8080/instance/rocksDB/fc850f08-7929-11ea-9b03-8242b630000d/complete",
 					"host": [
 						"localhost"
 					],
@@ -196,9 +249,8 @@
 					"path": [
 						"instance",
 						"rocksDB",
-						"{{instanceId}}",
-						"complete",
-						"{{taskId}}"
+						"fc850f08-7929-11ea-9b03-8242b630000d",
+						"complete"
 					]
 				}
 			},
@@ -257,7 +309,7 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:8080/instance/rocksDB/get/{{instanceId}}",
+					"raw": "localhost:8080/instance/rocksDB/get/c2e0a5e5-7815-11ea-957e-5ea64f120776",
 					"host": [
 						"localhost"
 					],
@@ -266,7 +318,7 @@
 						"instance",
 						"rocksDB",
 						"get",
-						"{{instanceId}}"
+						"c2e0a5e5-7815-11ea-957e-5ea64f120776"
 					]
 				}
 			},

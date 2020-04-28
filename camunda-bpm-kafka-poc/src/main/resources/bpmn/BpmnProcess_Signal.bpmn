@@ -45,7 +45,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_186uqqc</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:task id="UsertTaskUpdateProposal" name="Atualiza Proposta">
+    <bpmn:task id="UsertTaskUpdateProposal" name="Atualiza Proposta 1">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="kafkaTopic01" value="update-proposal-process" />
@@ -81,7 +81,7 @@
       <bpmn:incoming>SequenceFlow_12i15cx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_177ys3u</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Task_0j0wa4a" name="Atualiza Proposta">
+    <bpmn:task id="Task_0j0wa4a" name="Atualiza Proposta 2">
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="kafkaTopic01" value="update-proposal-process" />
@@ -102,7 +102,7 @@
     <bpmn:textAnnotation id="TextAnnotation_13egfuu">
       <bpmn:text>Signal diferente</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_0gsjmyu" sourceRef="Task_0j0wa4a" targetRef="TextAnnotation_13egfuu" />
+    <bpmn:association id="Association_0gsjmyu" sourceRef="IntermediateThrowEvent_0rhvf9v" targetRef="TextAnnotation_13egfuu" />
   </bpmn:process>
   <bpmn:signal id="Signal_1g0c4o9" name="atualizaPropostaSignal" />
   <bpmn:signal id="Signal_0ubf7qs" name="fraudSignal" />
@@ -182,8 +182,8 @@
         <dc:Bounds x="840" y="80" width="100" height="30" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0gsjmyu_di" bpmnElement="Association_0gsjmyu">
-        <di:waypoint x="828" y="160" />
-        <di:waypoint x="876" y="110" />
+        <di:waypoint x="890" y="180" />
+        <di:waypoint x="890" y="110" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
